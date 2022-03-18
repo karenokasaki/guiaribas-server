@@ -19,8 +19,10 @@ const ItemSchema = new Schema ({
     },
     review: [{
         type: mongoose.Schema.Types.ObjectId, ref: "Review"
-    }]
-
+    }],
+    isActive: {
+        type: Boolean
+    }
 })
 
 const ItemModel = mongoose.model("Item", ItemSchema)

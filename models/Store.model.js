@@ -25,7 +25,10 @@ const StoreSchema = new Schema({
     }],
     Score: [{
         type: Number
-    }]
+    }],
+    isActive: {
+        type: Boolean
+    }
 })
 
 
