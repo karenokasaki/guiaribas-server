@@ -5,8 +5,8 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
-/* const cors = require('cors')
-app.use(cors({ origin: process.env.REACT_APP_URL })) */
+const cors = require('cors')
+app.use(cors({ origin: process.env.REACT_APP_URL }))
 
 const userRouter = require('./routes/users.routes')
 app.use("/users", userRouter)
