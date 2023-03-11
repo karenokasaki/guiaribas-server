@@ -43,6 +43,10 @@ searchRoute.get("/:id", isAuth, attachCurrentUser, async (req, res) => {
     if (!search) {
       return res.status(404).json({ message: "Search not found" });
     }
+
+    search.viewed += 1;
+    await search.save();
+
     return res.status(200).json(search);
   } catch (error) {
     console.log(error);

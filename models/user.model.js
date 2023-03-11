@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema(
     totalLikes: { type: Number, min: 0 },
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
+    viewed: { type: Number, min: 0 },
   },
   {
     timestamps: true,

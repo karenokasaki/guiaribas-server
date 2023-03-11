@@ -38,6 +38,7 @@ const searchSchema = new Schema(
       ref: "User",
       required: true,
     },
+    viewed: { type: Number, min: 0 },
   },
   { timestamps: true }
 );

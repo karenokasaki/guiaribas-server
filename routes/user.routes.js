@@ -112,6 +112,26 @@ userRouter.get("/profile", isAuth, attachCurrentUser, async (req, res) => {
   }
 });
 
+// Rota para buscar usuário
+userRouter.get("/:id", isAuth, attachCurrentUser, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const populateUser = await userModel
+      .findById(id, { passwordHash: 0, __v: 0 })
+      .populate("comments");
+
+    populateUser.viewed += 1;
+    await populateUser.save();
+
+    // Retorna success quando o usuário esta logado
+    return res.status(200).json(populateUser);
+  } catch (error) {
+    // Retorna Internal Server Error
+    return res.status(500).json({ msg: error.message });
+  }
+});
+
 userRouter.put("/edit", isAuth, attachCurrentUser, async (req, res) => {
   try {
     const userId = req.currentUser._id;

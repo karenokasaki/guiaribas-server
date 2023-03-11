@@ -8,6 +8,16 @@ import commentModel from "../models/comment.model.js";
 
 const serviceRoute = express.Router();
 
+serviceRoute.get("/", async (req, res) => {
+  try {
+    const services = await serviceModel.find().populate("provider");
+    return res.json(services);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error getting services" });
+  }
+});
+
 serviceRoute.post("/create", isAuth, attachCurrentUser, async (req, res) => {
   try {
     const service = await serviceModel.create({
@@ -23,36 +33,22 @@ serviceRoute.post("/create", isAuth, attachCurrentUser, async (req, res) => {
 });
 
 //get all unprotect
-serviceRoute.get("/", async (req, res) => {
-  try {
-    const services = await serviceModel.find().populate("provider");
-    return res.json(services);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Error getting services" });
-  }
-});
 
 // get one order - only who created
 serviceRoute.get("/:idService", isAuth, attachCurrentUser, async (req, res) => {
   try {
     const service = await serviceModel
       .findById(req.params.idService)
-      .populate({ path: "provider", select: "username email phone" })
-      .populate({ path: "comments", select: "-service -__v" })
-      .populate({
-        path: "comments",
-        populate: {
-          path: "user",
-          model: userModel,
-          select: "username",
-        },
-      });
+      .populate({ path: "provider", select: "username email phone" });
 
     if (!service) {
-      return res.status(404).json({ message: "Service not found", eroor });
+      return res.status(404).json({ message: "Service not found" });
     }
-    return res.json(service);
+
+    service.viewed += 1;
+    await service.save();
+
+    return res.status(200).json(service);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error getting service", error });
